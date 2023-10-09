@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { db } from "../../firebase";
-import { doc, updateDoc } from "firebase/firestore";
+import { doc, updateDoc, deleteDoc } from "firebase/firestore";
 
 const Launch = ({ launch, index }) => {
   const [status, setStatus] = useState(launch.isLive ? "Live" : "Rugged");
@@ -17,6 +17,15 @@ const Launch = ({ launch, index }) => {
     setIsUpdating(false);
 
     alert("Launch Updated");
+  };
+
+  const handleDelete = async () => {
+    try {
+      const docRef = doc(db, "events", launch.id);
+      await deleteDoc(docRef);
+    } catch (error) {
+      console.error("Error deleting document: ", error);
+    }
   };
 
   return (
@@ -68,6 +77,13 @@ const Launch = ({ launch, index }) => {
           className="mt-[10px] bg-[green] text-white px-[10px] py-[5px] active:text-[red]"
         >
           {isUpdating ? "Updating..." : "ADD STATUS"}
+        </button>
+
+        <button
+          onClick={handleDelete}
+          className="ml-[15px] bg-[red] text-white px-[10px] py-[5px] "
+        >
+          DELETE
         </button>
       </div>
     </div>
